@@ -39,20 +39,36 @@ def seq_enum(a: float, b: float) -> Tuple[float, float]:
     raise Exception('Help...')
 
 
+def interval(x: float, a: float, b: float) -> Tuple[float, float]:
+    f_x = f(x)
+    f_a = f(a)
+    f_b = f(b)
+
+    if f_a * f_x < 0:
+        return a, x
+
+    elif f_b * f_x < 0:
+        return x, b
+
+    else:
+        raise Exception('Help...')
+
+
 def newton(a: float, b: float) -> Tuple[float, int]:
     if a >= b:
         raise ValueError('Invalid data')
 
     a, b = seq_enum(a, b)
-    x = (a + b) / 2
+    x = a
 
     k = 0
     while True:
         k += 1
 
-        if f(x) * f(x, 2) < 0:
+        x_new = x - f(x) / f(x, 1)
+
+        if a < x_new < b:
             print('Условие выполнено -> метод ньютона')
-            x_new = x - f(x) / f(x, 1)
 
         else:
             print('Условие не выполнено -> метод половинного деления')
@@ -61,13 +77,14 @@ def newton(a: float, b: float) -> Tuple[float, int]:
         if abs(x_new - x) < EPS:
             return x_new, k
 
-        a, b = seq_enum(a, b)
+        a, b = interval(x_new, a, b)
         x = x_new
 
 
 def main():
-    x, k = newton(-2, 2)
+    x, k = newton(-10, 10)
     print(f'x = {x:.{SIGNS}f}\nk = {k}')
+    print(f'{f(x):.{SIGNS}f}')
 
 
 if __name__ == '__main__':
